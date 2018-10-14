@@ -42,5 +42,8 @@ public class Sudoku {
 	
 	public static void main(String args[]){
 		myGrid.printGrid();
+//		System.out.println(myGrid.check(0, 0) ? "True" : "False");
+		backtrack();
+		myGrid.printGrid();
 	}
 }
