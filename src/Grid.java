@@ -6,7 +6,9 @@ public class Grid {
 	public Grid(int[][] arr){
 		grid = arr;
 	}
-	
+	public Grid(){
+            grid = new int[9][9];
+        }
 	public int getValue(int x, int y){
 		return grid[x][y];
 	}
@@ -18,17 +20,19 @@ public class Grid {
 	public void printGrid(){
 		for (int i = 0; i < 9; i++) {
 			for (int j = 0; j < 9; j++) {
-				System.out.print(Integer.toString(grid[i][j]) + "  ");
+				System.out.print(Integer.toString(grid[i][j]) + " ");
 			}
 			System.out.println();
 		}
 	}
-	
+	public Boolean isEmpty(int a, int b){
+            return grid[a][b] == 0;
+        }
 	public boolean squareCheck(int x, int y){
-		int squareX = x / 3;
-		int squareY = y / 3;
+		int squareX = (x / 3) *3;
+		int squareY = (y / 3) *3;
 		int[] nums = {0,0,0,0,0,0,0,0,0};
-		
+
 		for (int i = squareX ; i < squareX + 3; i++) { 
 			for (int j = squareY; j < squareY + 3; j++) {
 				if (grid[i][j] != 0) {
@@ -42,8 +46,9 @@ public class Grid {
 	
 	public boolean lineCheck(int x, int y){
 		int[] nums = {0,0,0,0,0,0,0,0,0};
-		
+                
 		for (int i = 0 ; i < 9; i++) {
+                        
 			if (grid[i][y] != 0){
 				if(nums[grid[i][y] - 1] == 1) return false;	//Already found in horizontal line
 				nums[grid[i][y] - 1] = 1; //Found num in line
@@ -63,7 +68,14 @@ public class Grid {
 		
 		return true;
 	}
-	
+	public boolean checkValue(int a, int b, int value){
+            grid[a][b] = value;
+            if(!check(a,b)){
+                grid[a][b] = 0;
+                return false;
+            }
+            return true;
+        }
 	public boolean check(int x, int y){
 		return squareCheck(x, y) && lineCheck(x, y); 
 	}
