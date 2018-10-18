@@ -32,7 +32,6 @@ public class Program {
         return myGrid;
 	}
 	
-	
 	public static void readInput(String input) {
        int[] lineValues = new int[9];
        String[] lines = input.split("\n");
@@ -46,9 +45,25 @@ public class Program {
 	       }
        }    
     }
+	
+	public static void readTestInput() {
+	    for (int i = 0; i < 9; i++) {
+	    	Scanner in = new Scanner(System.in);
+		    String line = in.nextLine();
+//		    System.out.println(line);
+		    String[] chars = new String[9];
+		    
+	        chars = line.split(" ");
+	       
+	        for (int j = 0; j < chars.length; j++) {     
+	    	    myGrid.setValue(i, j,Integer.parseInt(chars[j]));
+	        }
+	    }    
+	}
 	   
 	public static void main(String args[]){
-		readInput(args[0]);
+		readTestInput();
+		myGrid.printGrid();
         backtrack();
 		myGrid.printGrid();
 	}
