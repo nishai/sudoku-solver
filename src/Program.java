@@ -1,12 +1,15 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.Stack;
 import java.util.Scanner;
 
 public class Program {
 	static Grid myGrid = new Grid();
+	static int backtrack_count = 0;
 
 	public static Grid backtrack(){
+		backtrack_count = 0;
 		Stack<Pair> stack = new Stack<Pair>();
 		Pair parent = new Pair(0,0);
 
@@ -16,6 +19,7 @@ public class Program {
 					for (int k = 1; k < 10; k++) {
 						if(myGrid.checkValue(i, j, k)){
 							stack.push(new Pair(i,j));
+							backtrack_count++;
 							break;
 						}
 
@@ -68,12 +72,49 @@ public class Program {
 	}
 
 	public static void main(String args[]) throws FileNotFoundException {
-
-		readTestInput();
-		myGrid.printGrid();
-		backtrack();
-		myGrid.printGrid();
-
-
+		PrintWriter pw = new PrintWriter(new File("data.csv"));
+		StringBuilder sb = new StringBuilder();
+		SudokuGenerator sg = new SudokuGenerator();
+		
+		sb.append("no.of clues,average_time,average_backtracks,best_time,best_backtracks,worst_time,worst_backtracks\n");
+		
+		for (int i = 17; i < 80; i++) {
+			long sum_time = 0;
+			long sum_backtracks = 0;
+			
+			long best_time = 500000;
+			long worst_time = -1;
+			long best_backtracks = Long.MAX_VALUE;
+			long worst_backtracks = -1;
+			
+			for (int j = 0; j < 25; j++) {
+				sg.nextBoard(i);
+				myGrid = new Grid(sg.board);
+				
+				long startTime = System.nanoTime();
+				backtrack();
+				long endTime = System.nanoTime();
+				long runtime = endTime - startTime;
+				
+				sum_time += runtime;
+				sum_backtracks += backtrack_count;
+				if (runtime > worst_time) {worst_time = runtime;}
+				if (runtime < best_time) {best_time = runtime;}
+				if (backtrack_count > worst_backtracks) {worst_backtracks = backtrack_count;}
+				if (backtrack_count < best_backtracks) {best_backtracks = backtrack_count;}
+				
+				System.out.print("|");
+			}
+			
+			long avg_time = sum_time / 25; 
+			long avg_backtracks = sum_backtracks / 25; 
+			sb.append(i + "," + avg_time + "," + avg_backtracks + "," + best_time + "," + best_backtracks + "," + worst_time + "," + worst_backtracks +"\n");
+			
+			System.out.println(i + " clues complete ");
+		}
+		
+		pw.write(sb.toString());
+		pw.close();
+		System.out.println("Done writing csv.");
 	}
 }
